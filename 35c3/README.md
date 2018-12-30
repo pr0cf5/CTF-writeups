@@ -7,7 +7,7 @@ Second, there was another working vulnerability that discouraged me to look for 
 
 Simply the vulnerability is due to the misuse of type_handlers. Type_handler is a structure used to store the types within a collection. If an object is an int, the collection object stores it as a C Int instead of an object. If an int entry is misunderstood as a list or dictionary entry, we can access arbitrary, user controlled pointers which is an extremely powerful primitive.
 
-To understand the vulnerability we must know a few structs defined. After reverse engineering the .so file containing the Collection module, I could know who it works.
+To understand the vulnerability we must know a few structs defined. After reverse engineering the `Collection.cpython-36m-x86_64-linux-gnu.so` file containing the Collection module, I could know who it works.
 
 The main structure used is the Collection structure. 
 
@@ -120,7 +120,7 @@ The flag is located in fd 1023 and we only have readv, mmap, and write to load t
 
 At first I created a ROP chain that works only on the debugger. After adjusting a few offsets I succeeded to read the flag in the local environment. However the exploit failed on the local environment and I decided to write an exploit that always works.
 
-My plan is to defeat ASLR using abitrary read. I used the struct link_map structure located at .got.plt+0x8, which is a structure used to map all the shared objects. Using this I decided to find the Collection.so's base address.
+My plan is to defeat ASLR using abitrary read. I used the struct link_map structure located at .got.plt+0x8, which is a structure used to map all the shared objects. Using this I decided to find the `Collection.cpython-36m-x86_64-linux-gnu.so`'s base address.
 
 ** one note: All libraries are mmaped adjacent to each other but there were other shared libraries (such as libpthread) linked as well. Therefore the offset could be different in the local and remote environment since libpthread and other libraries' size would be different.
 
@@ -131,9 +131,9 @@ struct link_map{
   struct link_map *l_next,*l_prev;
 }
 
-First we read the struct link_map at the static location 0x9B3008, and iterate through the linked list until we get Collection.so. Now we can use gadgets in libc.so.6 and Collection.so.
+First we read the struct link_map at the static location 0x9B3008, and iterate through the linked list until we get `Collection.cpython-36m-x86_64-linux-gnu.so`. Now we can use gadgets in libc.so.6 and `Collection.cpython-36m-x86_64-linux-gnu.so`.
 
-The reason I tried to use gadgets in Collection.so is because triggering code in Collection.so is much controllable compared to the one in python3.6 for many reasons. First, we do not know if some automatic routine might reuse overwritten GOT values. Also, we do not fully understand how python internals work but we fully understood the functionalities of Colleciton.so. 
+The reason I tried to use gadgets in `Collection.cpython-36m-x86_64-linux-gnu.so` is because triggering code in `Collection.cpython-36m-x86_64-linux-gnu.so` is much controllable compared to the one in python3.6 for many reasons. First, we do not know if some automatic routine might reuse overwritten GOT values. Also, we do not fully understand how python internals work but we fully understood the functionalities of Colleciton.so. 
 
 First, we need FULL-register control and we can acheive that by arguments passed by registers. The most easiest one was the PyLong_FromLong and its RDI register is user-controlled. I also found this code segment:
 
@@ -147,7 +147,7 @@ Now if we change malloc_got to a leave; ret gadget we get to control the stack f
 
 (0) Create a string object with the ROP chain. By using id() we can get the exact address of the ROP chain and save it into the variable fake_stack_addr. (the real address of the string was at an address a bit higher than the PyObject address.)
 (1) Create a collection object like the following: Collection.Collection({"abcd":fake_stack_addr})
-(2) Get the base address of Collection.so (let's call this CLIB)
+(2) Get the base address of `Collection.cpython-36m-x86_64-linux-gnu.so` (let's call this CLIB)
 (3) Overwrite PyLong_FromLong GOT to CLIB + 0x1db2
 (4) Overwrite malloc GOT to a leave;ret gadget
 (5) Trigger the ROP using get("abcd")
