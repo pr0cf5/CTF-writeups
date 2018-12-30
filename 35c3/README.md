@@ -2,8 +2,10 @@ For the 35C3 CTF I solved the challenge 'collection' (pwn/easy)
 
 Although the vulnerability was very easy, it was difficult to find. There were a few reasons for this.
 
-First, it required some knowledge about the Python-C-API
-Second, there was another working vulnerability that discouraged me to look for the intended one.
+First, it required some knowledge about the Python-C-API.
+Second, there was another working vulnerability that discouraged me to look for the easy one. (zero refcount double free) Later by other teams' writeups I realized that the intended one was by using zero refcount but during the CTF I thought this was the result of lazy coding and didn't consider it an intended vulnerability.
+
+Simply the vulnerability is due to the misuse of type_handlers. Type_handler is a structure used to store the types within a collection. If an object is an int, the collection object stores it as a C Int instead of an object. If an int entry is misunderstood as a list or dictionary entry, we can access arbitrary, user controlled pointers which is an extremely powerful primitive.
 
 To understand the vulnerability we must know a few structs defined. After reverse engineering the .so file containing the Collection module, I could know who it works.
 
