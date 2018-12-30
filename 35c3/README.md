@@ -32,7 +32,7 @@ struct type_handler{
 }
 ```
 
-refcnt has no importance, since it doesn't affect control flow.
+`refcnt` has no importance, since it doesn't affect control flow.
 
 ```
 struct list{
