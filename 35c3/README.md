@@ -11,7 +11,7 @@ Simply the vulnerability is due to the misuse of type_handlers. Type_handler is 
 
 ## A few structs
 
-To understand the vulnerability we must know a few structs defined. After reverse engineering the `Collection.cpython-36m-x86_64-linux-gnu.so` file containing the Collection module, I could know who it works.
+To understand the vulnerability we must know a few structs defined. After reverse engineering the `Collection.cpython-36m-x86_64-linux-gnu.so` file containing the Collection module, I figured out how it functions.
 
 The main structure used is the Collection structure. 
 
