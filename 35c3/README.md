@@ -90,7 +90,7 @@ def arbitrary_write(addr,offset,ch):
 	x[offset]=ch
 ```
 
-using the collection module we could obtain arbitrary RW.
+The PoC uses the vulnerability lying in the get method.
 
 ```
 PyObject * Collection__get(PyObject *self, PyObject *args)
@@ -135,7 +135,60 @@ PyObject * Collection__get(PyObject *self, PyObject *args)
 }
 ```
 
-All PyLong objects are stored in C unsigned long form instead of the pointer to the PyObject struct. If we can get a PyLong entry to have a type other than 1, we can make the get() method return an arbitrary pointer. We can do this by creating a type_handler containing a int entry and a list entry. If we switch the order of them and re-create a Collection object it will use the same type_handler but using get() to take out the list will result in returning the value of the int as a pointer. We can get a full arbitrary RW by using bytearrays. There is a member in the bytearray struct that holds its buffer, and by forging a value for that member we can get arbitrary RW.
+All PyLong objects are stored in C unsigned long form instead of the pointer to the PyLongObject struct. If we can get a PyLong entry to have a type other than 1, we can make the get() method return an arbitrary pointer. 
+
+We can do this by creating a type_handler containing a int entry and a list entry. If we switch the order of them and re-create a Collection object it will use the same type_handler but using get() to take out the list will result in returning the value of the int as a pointer. Let's take a look at how a type_handler is allocated for a new Collection class.
+
+```
+struct handler * getTypeHandler(list *list)
+{
+  int idx; 
+  struct handler *handle;
+  handler *result;
+
+  idx = 0;
+  do
+  {
+    handler = handlers[idx];
+    if ( handler )
+    {
+      if ( listIsEquivalent(handler->list, list, recordComparator) )
+      {
+        result = handlers[idx];
+        ++result->usage_cnt;        
+        return result;
+      }
+    }
+    ++idx;
+  }
+  while ( idx != 256 );
+  return createTypeHandler(handler, list);
+}
+```
+
+Quite simple. handlers is a global buffer containing up to 256 pointers. It iterates through the handlers and checks if there is a usable (Equivalent) handler and if there is one it returns that handler. If no usable handler is found it creates a new one. Then, how does listIsEquivalent() work?
+
+```
+bool listIsEquivalent(list *l1, list *l2, int(*)(void*,void*) cmp_function)
+{
+  list *sorted_l1;
+  list *sorted_l2;
+
+  if ( l1->size != l2->size )
+    return 0LL;
+
+  l1 = listSort(l2,cmp_function);
+  l2 = listSort(l1,cmp_function);
+  return listEqual(sorted_l1, sorted_l2, cmp_function);
+```
+
+Simple. The two lists are sorted and then checked if identical. The vulnerability is right here. The handler's order of items can be different from the struct PyObject->elements list. We can make get() confuse the type of an element and trigger the arbitrary pointer access vulnerability. Now we can understand the PoC script. I created two Collection instances that shares the type handler. Howerver, the type of elements[0] differs in each instance, but in get() it will be considered as the type defined in the instance defined earlier. We can fake an C Int directly to a PyObject * pointer without converting it to a PyLong Object. 
+
+We can get a full arbitrary RW by using bytearrays. There is a member in the bytearray struct that holds its buffer, and by forging a value for that member we can get arbitrary RW. A more detailed exploit plan is the following:
+
+(1) In a string create a fake bytearray struct whose buffer is the pointer we want to read or write to.
+(2) Get the address of the fake structure by using id(stringobject)+0x48 (The real data part comes out 0x48 bytes after the PyObject structure)
+(3) Create collection instances so that get returns the fake bytearray object.
 
 ## Gaining RCE
 
