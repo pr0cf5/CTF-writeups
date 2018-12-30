@@ -388,3 +388,5 @@ Now we get RCE via ROP. The ROP chain building part is trivial (we have so many 
 # Overall
 
 Due to some tragic conditions (connection blocked to the netcat server) I couldn't get the flag during the CTF even though I fully wrote the exploit. Howerver I still learned a lot of things such as memory management in Python and triggering ROP in very large binaries. I think this was a very unique challenge and I hope to see these kinds of challenges again in the future. Maybe I can find some vulnerabilities in well-known python C libraries like Numpy or PIL?
+
+Flag: `35C3_l1st_equiv4lency_is_n0t_l15t_equ4l1ty`
