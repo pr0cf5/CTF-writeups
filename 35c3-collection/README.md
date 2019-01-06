@@ -373,9 +373,8 @@ First, we need FULL-register control and we can acheive that by arguments passed
 
 Now if we change malloc_got to a leave; ret gadget we get to control the stack frame, and perform a ROP. Let's summarize the primitives again:
 
-(0) Create a string object with the ROP chain. By using id() we can get the exact address of the ROP chain and save it into the variable fake_stack_addr. (the real address of the string was at an address a bit higher than the PyObject address.)
-
 ```
+(0) Create a string object with the ROP chain. By using id() we can get the exact address of the ROP chain and save it into the variable fake_stack_addr. (the real address of the string was at an address a bit higher than the PyObject address.)
 (1) Create a collection object like the following: Collection.Collection({"abcd":fake_stack_addr})
 (2) Get the base address of `Collection.cpython-36m-x86_64-linux-gnu.so` (let's call this CLIB)
 (3) Overwrite PyLong_FromLong GOT to CLIB + 0x1db2
