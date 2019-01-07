@@ -1,7 +1,8 @@
 # Pwnable.kr: Mipstake
 
 ## Summary
-I have never done any MIPS binary exploitation/reversing before and mipstake was a good intro challenge to get me into it. Also I learned how to set up debuggng environemnts for MIPS binaries. I got all the information from this document: https://gsec.hitb.org/materials/sg2015/whitepapers/Lyon%20Yang%20-%20Advanced%20SOHO%20Router%20Exploitation.pdf
+I have never done any MIPS binary exploitation/reversing before and mipstake was a good intro challenge to get me into it. Also I learned how to set up debuggng environemnts for MIPS binaries. I got all the information from this document: 
+https://gsec.hitb.org/materials/sg2015/whitepapers/Lyon%20Yang%20-%20Advanced%20SOHO%20Router%20Exploitation.pdf
 
 ## The vulnerability
 In the handle_client function (I don't know what it's named exactly) there is a obvious buffer overflow.
@@ -29,15 +30,22 @@ RWX:      Has RWX segments
 As shown in the document the ideal way to debug our exploit is to setup a GDB server. Since I don't have access to a MIPS device I decided to use qemu-system-mips.
 
 ### Preparing QEMU (Ref: https://markuta.com/how-to-build-a-mips-qemu-image-on-debian/)
+
 (1) Install qemu-system-mips, the MIPS emulator. `sudo apt-get install qemu-system-mips`
+
 (2) Download the Debian initial ramdisk for MIPS-Malta, a version of MIPS32: `wget http://ftp.debian.org/debian/dists/stable/main/installer-mips/current/images/malta/netboot/initrd.gz`
+
 (3) Download the Debian kernel image in the following URL: ` http://ftp.debian.org/debian/dists/stable/main/installer-mips/current/images/malta/netboot/` The filename must be something like `vmlinux-4.9.0-8-4kc-malta` with the version numbers different.
+
 (4) Create a qcow 2 image with appropriate size (with desktop features(GUI) 10GB is recommended. Without it 2GB is sufficient): `qemu-img create -f qcow2 hda.img 20G`
+
 (5) Boot the device: `qemu-system-mips -M malta \
   -m 256 -hda hda.img \
   -kernel vmlinux-<version>-malta \
   -initrd initrd.gz \
   -append "console=ttyS0 nokaslr" \
   -nographic`
+
 (6) Install the system. (this will take some time)
+
 (7) If you want to install a desktp environment execute the following instructions:
