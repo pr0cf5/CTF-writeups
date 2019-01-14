@@ -8,10 +8,6 @@ Change global_max_fast --> use fastbin poisoning to change vtable of `_IO_2_1_st
 However to trigger `fp->vtable->__overflow` there must be a condition satisfied (I figured this out by analyzing libc)
 
 The condition is:
-```
-#if defined _LIBC || defined _GLIBCPP_USE_WCHAR_T
-       || (_IO_vtable_offset (fp) == 0
-           && fp->_mode > 0 && (fp->_wide_data->_IO_write_ptr
-                    > fp->_wide_data->_IO_write_base))
-#endif
-```
+
+(1) `fp->file.mode > 0`
+(2) `fp->file.wide_data->_IO_write_ptr > fp->file.wide_data->_IO_write_base`

