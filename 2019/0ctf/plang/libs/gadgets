@@ -1,0 +1,11 @@
+0x4f2c5	execve("/bin/sh", rsp+0x40, environ)
+constraints:
+  rcx == NULL
+
+0x4f322	execve("/bin/sh", rsp+0x40, environ)
+constraints:
+  [rsp+0x40] == NULL
+
+0x10a38c	execve("/bin/sh", rsp+0x70, environ)
+constraints:
+  [rsp+0x70] == NULL
