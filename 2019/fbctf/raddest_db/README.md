@@ -48,7 +48,12 @@ struct object {
 When we empty a db, the entry structure is free'd and the BUF in echo{BUF} takes that chunk if BUF is of appropriate size. Afterwards the reference is not removed and we have a `fakeobj` primitive, which gives us a single RIP control with no arguments controlled.
 In code, it is like this: `this->vtable->func1(this, aux);`
 
-We have control to the entire `this` structure, so we can control `func1`. I changed `func1` to all one shot gadgets (found using david942j's `one_gadget`) but none of them popped a shell. I decided to expand this primitive to an arbitrary write primitive by changing `func1` to `gets`.
-Before triggering the vtable function we free the chunk right under where the `this` object is located, turning it into a freed, size 0x20 tcache bin. Overflowing `this` enables us to overwrite a tcache bin, which gives use arbitrary allocation. So, I changed the `fd` field of the next tcache chunk entry to `__free_hook` and tried some commands that would trigger `free('/bin.sh;'`. (The way was to enter /bin/sh;<LOTS OF SPACES> as the command because when the string is extended to some length its original buffer is freed (property of c++'s std::vector)
+We have control to the entire `this` structure, so we can control `func1`. I changed `func1` to all one shot gadgets (found using david942j's `one_gadget`) but none of them popped a shell. 
+
+I decided to expand this primitive to an arbitrary write primitive by changing `func1` to `gets`.
+
+Before triggering the vtable function we free the chunk right under where the `this` object is located, turning it into a freed, size 0x20 tcache bin. Overflowing `this` enables us to overwrite a tcache bin, which gives use arbitrary allocation. So, I changed the `fd` field of the next tcache chunk entry to `__free_hook` and got `__free_hook` allocated and wrote `system` to it.
+
+I tried some commands that would trigger `free('/bin.sh;'`. (The way was to enter /bin/sh;[LOTS OF SPACES] as the command because when the string is extended to some length its original buffer is freed (property of c++'s std::vector)
 
 
