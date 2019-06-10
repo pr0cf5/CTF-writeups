@@ -23,3 +23,5 @@ After some reversing I realized that if there is a pet type with 0xAA reading fr
 However when creating a pet (via `kpets_write`) it checks if the type is 0xC2 and denies all other types. We create 2 pet objects, and overflow the one in the lower address and change the type field of the pet at the highest address. You can see how exactly it is done in exploit.c
 
 It is a type of a TOCTOU (https://en.wikipedia.org/wiki/Time-of-check_to_time-of-use)bug, which is quite common in the real world.
+
+If the flag doesn't show after running the exploit, I tried `cat /dev/kpets` multiple times and it gave me the flag
