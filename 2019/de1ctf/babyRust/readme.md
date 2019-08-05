@@ -68,6 +68,7 @@ struct magicBoxF {
 ```
 
 This explains why a heap pointer was printed as int after doing magic 0x520. A char * was misidentified as an unsigned long. Then, I thought can I confuse an int to a char *? This would give us arbitrary read? And sure it was.  After some trial and error, I could segfault the program by making it try to access the address 0xdeadbeef. Afterwards, I scanned the heap to cause other leaks, and I found something like this:
+```
 F(93874519129536, 17,17,\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x11\x04\x00\x00\x00\x00\x00\x00F(93874519129536, 17,17,create
 2.show
 3.edit
@@ -86,7 +87,7 @@ ffffffffff600000-ffffffffff601000 r-xp 00000000 00:00 0                  [vsysca
 dl-2.27.so
 7f26241c0000-7f26241c1000 r--p 00002000 08:01 923696   ,0)
 You have a magic box.
-
+```
 What I see are contents printed to stdout and the contents of the file `/proc/self/maps`. I think I scanned the file read buffer of stdout and `/proc/self/maps`. (The former was probably opened due to an automatic routine in rust, as means to protect memory) Now I have the stack base address and ld-2.27.so's base address, but all the important stuff like **system** and **__free_hook** is in libc.so.6. So, I read the pointer of __libc_malloc from ld-2.27.so's malloc@got, and I got the libc base.
 
 ## Getting arbitrary write
