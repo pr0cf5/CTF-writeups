@@ -27,9 +27,9 @@ I took a look at the patch file, and spotted mainly two things.
 
 All the patches were done on a file called rarvm.c. RAR is a file format for archiving data. How is VM (Virutal Machine) supposed to be related to it? At first I thought that it was a sandboxed executor for binaries inside the archived rar file. I started analyzing the source code but couldn't understand what rar vm really is. 
 
-After getting some sleep, I google searched about RAR vm. It showed a very old [CVE]() on ClamAV, which seemed kinda relevant. Also I spotted a [blogpost]() about rarVM. WTF? RAR has support for custom bytecode, and unrar'ing programs execute them? How surprising. 
+After getting some sleep, I google searched about RAR vm. It showed a very old [CVE](https://www.cvedetails.com/cve/CVE-2007-3725/) on ClamAV, which seemed kinda relevant. Also I spotted a [blogpost](http://blog.cmpxchg8b.com/2012/09/fun-with-constrained-programming.html) about rarVM. WTF? RAR has support for custom bytecode, and unrar'ing programs execute them? How surprising. 
 
-I also found [this]() repository, which implemented a linker and assembler for rar files. I think it was super cool. I decided to use it when constructing my exploit.
+I also found [this](https://github.com/taviso/rarvmtools) repository, which implemented a linker and assembler for rar files. I think it was super cool. I decided to use it when constructing my exploit.
 
 Now, I get the point of the challenge: escape the implemented rar VM executor and get RCE
 
