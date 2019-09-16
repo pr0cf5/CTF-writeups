@@ -1,0 +1,101 @@
+0x1000            0x1f000 r-xp    1e000 0      <explored>
+    0x555555554000     0x555555573000 r-xp    1f000 0      /usr/local/bin/clamscan
+    0x555555773000     0x55555577a000 r--p     7000 1f000  /usr/local/bin/clamscan
+    0x55555577a000     0x55555577b000 rw-p     1000 26000  /usr/local/bin/clamscan
+    0x55555577b000     0x55555583b000 rw-p    c0000 0      [heap]
+    0x7fffdcd30000     0x7fffdd1ab000 rw-p   47b000 0      
+    0x7fffdd1c3000     0x7ffff2f5c000 rw-p 15d99000 0      
+    0x7ffff2f5c000     0x7ffff2f67000 r-xp     b000 0      /usr/local/lib/libclamunrar.so.7.1.1
+    0x7ffff2f67000     0x7ffff3167000 ---p   200000 b000   /usr/local/lib/libclamunrar.so.7.1.1
+    0x7ffff3167000     0x7ffff3168000 r--p     1000 b000   /usr/local/lib/libclamunrar.so.7.1.1
+    0x7ffff3168000     0x7ffff3169000 rw-p     1000 c000   /usr/local/lib/libclamunrar.so.7.1.1
+    0x7ffff3169000     0x7ffff316b000 r-xp     2000 0      /usr/local/lib/libclamunrar_iface.so.7.1.1
+    0x7ffff316b000     0x7ffff336a000 ---p   1ff000 2000   /usr/local/lib/libclamunrar_iface.so.7.1.1
+    0x7ffff336a000     0x7ffff336b000 r--p     1000 1000   /usr/local/lib/libclamunrar_iface.so.7.1.1
+    0x7ffff336b000     0x7ffff336c000 rw-p     1000 2000   /usr/local/lib/libclamunrar_iface.so.7.1.1
+    0x7ffff336c000     0x7ffff3383000 r-xp    17000 0      /lib/x86_64-linux-gnu/libgcc_s.so.1
+    0x7ffff3383000     0x7ffff3582000 ---p   1ff000 17000  /lib/x86_64-linux-gnu/libgcc_s.so.1
+    0x7ffff3582000     0x7ffff3583000 r--p     1000 16000  /lib/x86_64-linux-gnu/libgcc_s.so.1
+    0x7ffff3583000     0x7ffff3584000 rw-p     1000 17000  /lib/x86_64-linux-gnu/libgcc_s.so.1
+    0x7ffff3584000     0x7ffff36fd000 r-xp   179000 0      /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.25
+    0x7ffff36fd000     0x7ffff38fd000 ---p   200000 179000 /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.25
+    0x7ffff38fd000     0x7ffff3907000 r--p     a000 179000 /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.25
+    0x7ffff3907000     0x7ffff3909000 rw-p     2000 183000 /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.25
+    0x7ffff3909000     0x7ffff390d000 rw-p     4000 0      
+    0x7ffff390d000     0x7ffff52b5000 r-xp  19a8000 0      /usr/lib/x86_64-linux-gnu/libicudata.so.60.2
+    0x7ffff52b5000     0x7ffff54b4000 ---p   1ff000 19a8000 /usr/lib/x86_64-linux-gnu/libicudata.so.60.2
+    0x7ffff54b4000     0x7ffff54b5000 r--p     1000 19a7000 /usr/lib/x86_64-linux-gnu/libicudata.so.60.2
+    0x7ffff54b5000     0x7ffff54b6000 rw-p     1000 19a8000 /usr/lib/x86_64-linux-gnu/libicudata.so.60.2
+    0x7ffff54b6000     0x7ffff54da000 r-xp    24000 0      /lib/x86_64-linux-gnu/liblzma.so.5.2.2
+    0x7ffff54da000     0x7ffff56da000 ---p   200000 24000  /lib/x86_64-linux-gnu/liblzma.so.5.2.2
+    0x7ffff56da000     0x7ffff56db000 r--p     1000 24000  /lib/x86_64-linux-gnu/liblzma.so.5.2.2
+    0x7ffff56db000     0x7ffff56dc000 rw-p     1000 25000  /lib/x86_64-linux-gnu/liblzma.so.5.2.2
+    0x7ffff56dc000     0x7ffff587f000 r-xp   1a3000 0      /usr/lib/x86_64-linux-gnu/libicuuc.so.60.2
+    0x7ffff587f000     0x7ffff5a7e000 ---p   1ff000 1a3000 /usr/lib/x86_64-linux-gnu/libicuuc.so.60.2
+    0x7ffff5a7e000     0x7ffff5a91000 r--p    13000 1a2000 /usr/lib/x86_64-linux-gnu/libicuuc.so.60.2
+    0x7ffff5a91000     0x7ffff5a92000 rw-p     1000 1b5000 /usr/lib/x86_64-linux-gnu/libicuuc.so.60.2
+    0x7ffff5a92000     0x7ffff5a93000 rw-p     1000 0      
+    0x7ffff5a93000     0x7ffff5a96000 r-xp     3000 0      /lib/x86_64-linux-gnu/libdl-2.27.so
+    0x7ffff5a96000     0x7ffff5c95000 ---p   1ff000 3000   /lib/x86_64-linux-gnu/libdl-2.27.so
+    0x7ffff5c95000     0x7ffff5c96000 r--p     1000 2000   /lib/x86_64-linux-gnu/libdl-2.27.so
+    0x7ffff5c96000     0x7ffff5c97000 rw-p     1000 3000   /lib/x86_64-linux-gnu/libdl-2.27.so
+    0x7ffff5c97000     0x7ffff5caa000 r-xp    13000 0      /usr/local/lib/libclammspack.so.0.1.0
+    0x7ffff5caa000     0x7ffff5ea9000 ---p   1ff000 13000  /usr/local/lib/libclammspack.so.0.1.0
+    0x7ffff5ea9000     0x7ffff5eaa000 r--p     1000 12000  /usr/local/lib/libclammspack.so.0.1.0
+    0x7ffff5eaa000     0x7ffff5eab000 rw-p     1000 13000  /usr/local/lib/libclammspack.so.0.1.0
+    0x7ffff5eab000     0x7ffff6048000 r-xp   19d000 0      /lib/x86_64-linux-gnu/libm-2.27.so
+    0x7ffff6048000     0x7ffff6247000 ---p   1ff000 19d000 /lib/x86_64-linux-gnu/libm-2.27.so
+    0x7ffff6247000     0x7ffff6248000 r--p     1000 19c000 /lib/x86_64-linux-gnu/libm-2.27.so
+    0x7ffff6248000     0x7ffff6249000 rw-p     1000 19d000 /lib/x86_64-linux-gnu/libm-2.27.so
+    0x7ffff6249000     0x7ffff62b9000 r-xp    70000 0      /lib/x86_64-linux-gnu/libpcre.so.3.13.3
+    0x7ffff62b9000     0x7ffff64b9000 ---p   200000 70000  /lib/x86_64-linux-gnu/libpcre.so.3.13.3
+    0x7ffff64b9000     0x7ffff64ba000 r--p     1000 70000  /lib/x86_64-linux-gnu/libpcre.so.3.13.3
+    0x7ffff64ba000     0x7ffff64bb000 rw-p     1000 71000  /lib/x86_64-linux-gnu/libpcre.so.3.13.3
+    0x7ffff64bb000     0x7ffff64d7000 r-xp    1c000 0      /lib/x86_64-linux-gnu/libz.so.1.2.11
+    0x7ffff64d7000     0x7ffff66d6000 ---p   1ff000 1c000  /lib/x86_64-linux-gnu/libz.so.1.2.11
+    0x7ffff66d6000     0x7ffff66d7000 r--p     1000 1b000  /lib/x86_64-linux-gnu/libz.so.1.2.11
+    0x7ffff66d7000     0x7ffff66d8000 rw-p     1000 1c000  /lib/x86_64-linux-gnu/libz.so.1.2.11
+    0x7ffff66d8000     0x7ffff6973000 r-xp   29b000 0      /usr/lib/x86_64-linux-gnu/libcrypto.so.1.1
+    0x7ffff6973000     0x7ffff6b72000 ---p   1ff000 29b000 /usr/lib/x86_64-linux-gnu/libcrypto.so.1.1
+    0x7ffff6b72000     0x7ffff6b9e000 r--p    2c000 29a000 /usr/lib/x86_64-linux-gnu/libcrypto.so.1.1
+    0x7ffff6b9e000     0x7ffff6ba0000 rw-p     2000 2c6000 /usr/lib/x86_64-linux-gnu/libcrypto.so.1.1
+    0x7ffff6ba0000     0x7ffff6ba3000 rw-p     3000 0      
+    0x7ffff6ba3000     0x7ffff6c23000 r-xp    80000 0      /usr/lib/x86_64-linux-gnu/libssl.so.1.1
+    0x7ffff6c23000     0x7ffff6e23000 ---p   200000 80000  /usr/lib/x86_64-linux-gnu/libssl.so.1.1
+    0x7ffff6e23000     0x7ffff6e2c000 r--p     9000 80000  /usr/lib/x86_64-linux-gnu/libssl.so.1.1
+    0x7ffff6e2c000     0x7ffff6e30000 rw-p     4000 89000  /usr/lib/x86_64-linux-gnu/libssl.so.1.1
+    0x7ffff6e30000     0x7ffff6e39000 r-xp     9000 0      /usr/lib/x86_64-linux-gnu/libltdl.so.7.3.1
+    0x7ffff6e39000     0x7ffff7038000 ---p   1ff000 9000   /usr/lib/x86_64-linux-gnu/libltdl.so.7.3.1
+    0x7ffff7038000     0x7ffff7039000 r--p     1000 8000   /usr/lib/x86_64-linux-gnu/libltdl.so.7.3.1
+    0x7ffff7039000     0x7ffff703a000 rw-p     1000 9000   /usr/lib/x86_64-linux-gnu/libltdl.so.7.3.1
+    0x7ffff703a000     0x7ffff71f0000 r-xp   1b6000 0      /usr/lib/x86_64-linux-gnu/libxml2.so.2.9.4
+    0x7ffff71f0000     0x7ffff73f0000 ---p   200000 1b6000 /usr/lib/x86_64-linux-gnu/libxml2.so.2.9.4
+    0x7ffff73f0000     0x7ffff73f8000 r--p     8000 1b6000 /usr/lib/x86_64-linux-gnu/libxml2.so.2.9.4
+    0x7ffff73f8000     0x7ffff73fa000 rw-p     2000 1be000 /usr/lib/x86_64-linux-gnu/libxml2.so.2.9.4
+    0x7ffff73fa000     0x7ffff73fb000 rw-p     1000 0      
+    0x7ffff73fb000     0x7ffff75e2000 r-xp   1e7000 0      /lib/x86_64-linux-gnu/libc-2.27.so
+    0x7ffff75e2000     0x7ffff77e2000 ---p   200000 1e7000 /lib/x86_64-linux-gnu/libc-2.27.so
+    0x7ffff77e2000     0x7ffff77e6000 r--p     4000 1e7000 /lib/x86_64-linux-gnu/libc-2.27.so
+    0x7ffff77e6000     0x7ffff77e8000 rw-p     2000 1eb000 /lib/x86_64-linux-gnu/libc-2.27.so
+    0x7ffff77e8000     0x7ffff77ec000 rw-p     4000 0      
+    0x7ffff77ec000     0x7ffff7806000 r-xp    1a000 0      /lib/x86_64-linux-gnu/libpthread-2.27.so
+    0x7ffff7806000     0x7ffff7a05000 ---p   1ff000 1a000  /lib/x86_64-linux-gnu/libpthread-2.27.so
+    0x7ffff7a05000     0x7ffff7a06000 r--p     1000 19000  /lib/x86_64-linux-gnu/libpthread-2.27.so
+    0x7ffff7a06000     0x7ffff7a07000 rw-p     1000 1a000  /lib/x86_64-linux-gnu/libpthread-2.27.so
+    0x7ffff7a07000     0x7ffff7a0b000 rw-p     4000 0      
+    0x7ffff7a0b000     0x7ffff7bbc000 r-xp   1b1000 0      /usr/local/lib/libclamav.so.7.1.1
+    0x7ffff7bbc000     0x7ffff7dbb000 ---p   1ff000 1b1000 /usr/local/lib/libclamav.so.7.1.1
+    0x7ffff7dbb000     0x7ffff7dc4000 r--p     9000 1b0000 /usr/local/lib/libclamav.so.7.1.1
+    0x7ffff7dc4000     0x7ffff7dd4000 rw-p    10000 1b9000 /usr/local/lib/libclamav.so.7.1.1
+    0x7ffff7dd4000     0x7ffff7dd5000 rw-p     1000 0      
+    0x7ffff7dd5000     0x7ffff7dfc000 r-xp    27000 0      /lib/x86_64-linux-gnu/ld-2.27.so
+    0x7ffff7dd5000     0x7ffff7dfc000 rwxp    27000 0      <explored>
+    0x7ffff7e14000     0x7ffff7fe0000 rw-p   1cc000 0      
+    0x7ffff7ff6000     0x7ffff7ff8000 rw-p     2000 0      
+    0x7ffff7ff8000     0x7ffff7ffb000 r--p     3000 0      [vvar]
+    0x7ffff7ffb000     0x7ffff7ffc000 r-xp     1000 0      [vdso]
+    0x7ffff7ffc000     0x7ffff7ffd000 r--p     1000 27000  /lib/x86_64-linux-gnu/ld-2.27.so
+    0x7ffff7ffd000     0x7ffff7ffe000 rw-p     1000 28000  /lib/x86_64-linux-gnu/ld-2.27.so
+    0x7ffff7ffe000     0x7ffff7fff000 rw-p     1000 0      
+    0x7ffffffde000     0x7ffffffff000 rw-p    21000 0      [stack]
+0xffffffffff600000 0xffffffffff601000 r-xp     1000 0      [vsyscall]
