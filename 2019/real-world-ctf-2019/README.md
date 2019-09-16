@@ -2,7 +2,7 @@
 
 This year's real world CTF was really awesome. It had several improvements from last year. (challenges had more directions and hints, crypto and reverse challenges introduced) I spent a lot of time on Fuchsia IPC reversing (`cai-dan-ti-1`) and peeking at recent PHP commit logs (`MoP`) but I coudldn't solve any of them, which is sad. I managed to solve only one challenge, `anti-anti-virus`. Here is my write-up.
 
-Also, just in case you're curious the pwnables that came out were based on the following topics: 
+Also, just in case you're curious the pwnables that came out were based on the following topics:<br>
 <1> cai-dan-ti (1,2): Reversing-Shellcoding-Pwning on Google Fuchsia<br>
 <2> Dezhou Instruments: Pwning an iPhone application<br>
 <3> MoP: exploiting a PHP memory corruption bug to bypass `base_dir` and `disable_function` to achieve full RCE.<br>
