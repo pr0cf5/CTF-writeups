@@ -26,7 +26,7 @@ Since there are no leaks, I changed atoi@got to printf and overwrote free@got to
 ## multiheap
 There can be many solutions for this. I looked at the author's write-up and found out that it is related to a class of vulnerability called wild-copy, which is the event where memcpy's third argument goes crazy and overflows a ton of data, which is triggered to RCE before memcpy segfaults.
 
-I also considered this as well, but found a much powerful bug: a race condition. If we copy from one note to another while deleting the src note, we get a use after free. A use after free in tcache malloc is equivalent to arbitrary write.
+I also considered this as well, but found a much powerful bug: a race condition. If we copy from one note to another while deleting the dst note, we get a use after free. A use after free in tcache malloc is equivalent to arbitrary write.
 
 Since all addresses are randomized, we first leak a libc address. This can be done with the vulnerability where the heap is uninitialized, so free'ing a 0x500 chunk and getting it back will leak a libc address.
 
