@@ -5,7 +5,6 @@ def exp():
 	p.sendlineafter(">> ", pay)
 	try:
 		p.sendline("echo 'i pwned you'")
-		p.recvuntil("i pwned you", timeout=2)
 		p.interactive()
 	except:
 		log.failure("shit")
