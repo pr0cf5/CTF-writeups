@@ -1,0 +1,1 @@
+cmd_/home/procfs/balsnctf/knote/hello.ko := ld -r -m elf_x86_64  -z max-page-size=0x200000 -T ./scripts/module-common.lds  --build-id  -o /home/procfs/balsnctf/knote/hello.ko /home/procfs/balsnctf/knote/hello.o /home/procfs/balsnctf/knote/hello.mod.o ;  true
