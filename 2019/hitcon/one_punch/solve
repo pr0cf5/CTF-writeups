@@ -1,0 +1,4 @@
+1. use uaf to leak libc and heap
+2. use the 'merge-with-tcache' method once more
+3. get tcache allocated as hero 0
+4. use it as a stable arbitrary read/write vector and rule the world
