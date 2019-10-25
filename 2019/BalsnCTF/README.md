@@ -62,4 +62,4 @@ At a chance of 1/4, the parent pops a shell which gives us the flag.
 ## KrazyNote
 
 I have lots to talk about this challenge, so I wrote a blogpost about it.
-[Check it out]() if you're curious.
+[Check it out](https://pr0cf5.github.io/ctf/2019/10/10/balsn-ctf-krazynote.html) if you're curious.
