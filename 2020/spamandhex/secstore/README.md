@@ -3,6 +3,7 @@ Secstore was a kernel exploit challenge. I will skip the overall structure of th
 
 # Bugs
 There are two bugs. 
+
 (1) Race condition on `items` buffer. The root cause of this is because `items` is a pointe created via `vmap`, and therefore it can be accessed in userspace via the corresponding user page. At first I wrote a working exploit using this but found the second bug much more reliable and clean. 
 
 (2) `items` buffer can be overwritten by DMA read operation, which causes all kernel checks to be bypassed.
