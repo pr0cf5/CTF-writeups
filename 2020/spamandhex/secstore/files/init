@@ -1,0 +1,28 @@
+#!/bin/sh
+
+mount -t proc none /proc
+mount -t sysfs none /sys
+
+insmod /sec-store.ko
+
+mknod /dev/sec c 235 0
+chmod 666 /dev/sec
+ln -s /dev/console /dev/ttyAMA0
+
+sleep 2
+cat <<EOF
+ _______________________________________
+/ If you have built castles in the air, \\
+| your work need not be lost; that is   |
+| where they should be. Now put the     |
+\ foundations under them.               /
+ ---------------------------------------
+        \   ^__^
+         \  (oo)\_______
+            (__)\       )\/\\
+                ||----w |
+                ||     ||
+EOF
+
+setsid cttyhack su root
+poweroff -f
