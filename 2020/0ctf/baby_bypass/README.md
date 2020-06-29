@@ -13,6 +13,8 @@ The objective is to exploit a custom php extension. Custom php extensions are us
 
 The exploit primitive given is extremely powerful and easy to use. Also, since we directly interact with the interpreter instead of interacting it via web, heap layout is very stable. But the number of solves is small, and I think it's because it's very hard to spot the bug by static analysis. 
 
+My final exploit code is [here](pwn.php).
+
 ## Bugs
 There are two bugs. The first bug is free lunch. There is an OOB read in the `pwnlib_hexdump` method, since there are no bounds checks for the `offset` parameter. 
 
@@ -235,13 +237,11 @@ function create_awesome_objects() {
 ```
 
 A brief explanation of what's happening. 
-(1) `$uaf` is first freed by `pwnlib_flat`. 
 
-(2) `$reclaim1` reclaims the `HashTable` of `$uaf`. 
-
-(3) Free `$uaf` once more by dropping its reference. This action also frees the `zend_string` structure of `$reclaim`. 
-
-(4) `$reclaim2` is reclaims this address. As a result, `$reclaim2` is a array and `$reclaim1` is a string, but their `zval` values point to the same address. 
+(1) `$uaf` is first freed by `pwnlib_flat`.  
+(2) `$reclaim1` reclaims the `HashTable` of `$uaf`.  
+(3) Free `$uaf` once more by dropping its reference. This action also frees the `zend_string` structure of `$reclaim`.  
+(4) `$reclaim2` is reclaims this address. As a result, `$reclaim2` is a array and `$reclaim1` is a string, but their `zval` values point to the same address.  
 
 
 This is the definition of `zend_string`. 
