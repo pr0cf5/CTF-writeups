@@ -18,7 +18,7 @@ My final exploit code is [here](pwn.php).
 ## Bugs
 There are two bugs. The first bug is free lunch. There is an OOB read in the `pwnlib_hexdump` method, since there are no bounds checks for the `offset` parameter. 
 
-But I couldn't find the second bug for more than 5+ hours and moaned about the CTF's difficulty and my lack of intelligence for that amount of time. So I decided to use an analysis method that does not require intelligence of any sort. I fuzzed the APIs using a grammar based fuzzer. Someone had already done [this work](https://blog.jmpesp.org/2020/01/fuzzing-php-with-domato.html) using Domato, which is nice. The basic idea is to feed **grammar** to a generator, and the generator creates random scripts that adheres to the given grammar. If you've used `flex` or `bison` you should be familiar with this concept. I fed this grammar file to the fuzzer. This is only part of the file. For the full grammar file refer to [php.txt](./domatofuzzer/php.txt).
+But I couldn't find the second bug for more than 5+ hours and moaned about the CTF's difficulty and my lack of intelligence for that amount of time. So I decided to use an analysis method that does not require intelligence of any sort. I fuzzed the APIs using a grammar based fuzzer. Someone had already done [this work](https://blog.jmpesp.org/2020/01/fuzzing-php-with-domato.html) using Domato, which is nice. The basic idea is to feed **grammar** to a generator, and the generator creates random scripts that adheres to the given grammar. If you've used `flex` or `bison` you should be familiar with this concept. I fed this grammar file to the fuzzer. This is only part of the file. For the full grammar file refer to [php.txt](./domatophp/php.txt).
 
 ```
 <functioncall> = pwnlib_u64(<fuzzstring>)
