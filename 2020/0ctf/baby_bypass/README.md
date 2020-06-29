@@ -9,10 +9,11 @@ Sadly, due to my lack of skill and time (usually I spend full 48hrs but this tim
 # Writeup for Baby Bypass 
 
 ## Overall 
-The objective is to exploit a custom php extension. Custom php extensions are usually in the form of shared libraries. Since there were past CTF challenges regarding custom php extensions, I think you can search for these kinds of challenges for reference. Also, there are very good tutorials for building a php extension. 
+The objective is to exploit a custom php extension. Custom php extensions are usually in the form of shared libraries. There are very good tutorials for building a php extensions, so they can be a good reference before looking at this challenge. 
 
-The exploit primitive given is extremely powerful and easy to use. Also, since we directly interact with the interpreter heap layout is very stable. But the number of solves is small, and I think I know why. It's because it's very hard to spot the bug by static analysis. (At least that's what I think) 
+The exploit primitive given is extremely powerful and easy to use. Also, since we directly interact with the interpreter instead of interacting it via web, heap layout is very stable. But the number of solves is small, and I think it's because it's very hard to spot the bug by static analysis. 
 
+## Bugs
 There are two bugs. The first bug is free lunch. There is an OOB read in the `pwnlib_hexdump` method, since there are no bounds checks for the `offset` parameter. 
 
 But I couldn't find the second bug for more than 5+ hours and moaned about the CTF's difficulty and my lack of intelligence for that amount of time. So I decided to use an analysis method that does not require intelligence of any sort. I fuzzed the APIs using a grammar based fuzzer. Someone had already done [this work](https://blog.jmpesp.org/2020/01/fuzzing-php-with-domato.html) using Domato, which is nice. The basic idea is to feed **grammar** to a generator, and the generator creates random scripts that adheres to the given grammar. If you've used `flex` or `bison` you should be familiar with this concept. I fed this grammar file to the fuzzer. This is only part of the file. For the full grammar file refer to [php.txt](./domatofuzzer/php.txt).
@@ -213,6 +214,7 @@ print_r($my_range);
 
 The expected output is to print from 0 to 10 but the program printed 0 to 255, meaning that `$my_range` is freed and reclaimed by `$second`. 
 
+# Exploitation
 Since `struct HashTable` is 56 bytes, we can reclaim a `struct HashTable` by allocating a string of 24 bytes. This is because a 32 byte header is appended to the string payload when it is created. I figured out the struct size by adding a `printf("%d\n", sizeof(HashTable))` to the php source code, but you can also figure this out by looking at IDA and looking at the arguments that are passed to `emalloc`. 
 
 So this is my exploit primitive. 
@@ -234,9 +236,13 @@ function create_awesome_objects() {
 
 A brief explanation of what's happening. 
 (1) `$uaf` is first freed by `pwnlib_flat`. 
+
 (2) `$reclaim1` reclaims the `HashTable` of `$uaf`. 
+
 (3) Free `$uaf` once more by dropping its reference. This action also frees the `zend_string` structure of `$reclaim`. 
+
 (4) `$reclaim2` is reclaims this address. As a result, `$reclaim2` is a array and `$reclaim1` is a string, but their `zval` values point to the same address. 
+
 
 This is the definition of `zend_string`. 
 
