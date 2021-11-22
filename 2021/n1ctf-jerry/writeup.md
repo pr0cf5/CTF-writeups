@@ -155,10 +155,10 @@ function fakeObj(addr) {
 ```
 If you see this, we first create a fasttype array (contiguous array) named `a`. Then, what happens is the following.
 
-[1] a.slice is called. 
-[2] `start` is calculated. => `end` = 12
-[3] `end` is forcefully converted to a number by calling the valueOf function. First `a` is shrinked to length 5, and an `ArrayBuffer` is allocated right next to the buffer of `a`. (The numbers here are based on an analysis of the jmem heap allocator to reclaim space right next to `a`) Then, we write a value `(addr << 3) | 3` at the `ArrayBuffer`. Then it returns 13. => `end` = 13 
-[4] Actual slicing is executed, but it reads out of bounds, returning our forged value which is `(addr << 3) | 3`. `addr<<3` is the compressed pointer, and `3` is our object type. 
+[1] a.slice is called.  
+[2] `start` is calculated. => `end` = 12  
+[3] `end` is forcefully converted to a number by calling the valueOf function. First `a` is shrinked to length 5, and an `ArrayBuffer` is allocated right next to the buffer of `a`. (The numbers here are based on an analysis of the jmem heap allocator to reclaim space right next to `a`) Then, we write a value `(addr << 3) | 3` at the `ArrayBuffer`. Then it returns 13. => `end` = 13  
+[4] Actual slicing is executed, but it reads out of bounds, returning our forged value which is `(addr << 3) | 3`. `addr<<3` is the compressed pointer, and `3` is our object type.  
 
 Similarly we can create a fakeFloat primitive. In JerryScript floats are like pointers, which reveal the IEEE 64bit FP representation when dereferenced. So they can be used for arbitrary read on the heap. 
 
@@ -309,7 +309,7 @@ ecma_op_create_arraybuffer_object (const ecma_value_t *arguments_list_p, /**< li
 ```
 
 As you can see there are two modes of operation. So I use it to create an arbitrary read/write primitive very easily.
-```
+```javascript
 //recipe for arraybuffer class
 haystack[idx++] = 0x1;
 haystack[idx++] = 0x0;  
